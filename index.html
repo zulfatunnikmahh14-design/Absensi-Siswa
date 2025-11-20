@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absensi Siswa Online</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 430px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 18px;
+            box-shadow: 0px 15px 40px rgba(0, 0, 0, 0.25);
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0 16px 0;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        input:focus, select:focus {
+            border-color: #4e54c8;
+            box-shadow: 0px 0px 5px rgba(78,84,200,0.4);
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: linear-gradient(135deg, #4e54c8, #8f94fb);
+            color: white;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.03);
+            box-shadow: 0px 8px 20px rgba(0,0,0,0.2);
+        }
+
+        #result {
+            margin-top: 15px;
+            text-align: center;
+            font-weight: 600;
+            color: green;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Absensi Siswa Online</h2>
+
+    <label>Nama Siswa:</label>
+    <input type="text" id="nama" placeholder="Masukkan nama">
+
+    <label>Kelas:</label>
+    <input type="text" id="kelas" placeholder="Misal: 10 IPS 1">
+
+    <label>Status Kehadiran:</label>
+    <select id="status">
+        <option>Hadir</option>
+        <option>Izin</option>
+        <option>Sakit</option>
+        <option>Alpha</option>
+    </select>
+
+    <button onclick="kirimAbsensi()">Kirim Absensi</button>
+
+    <p id="result"></p>
+</div>
+
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+    // CONFIG FIREBASE (ISI DENGAN PUNYAMU)
+    const firebaseConfig = {
+      apiKey: "ISI_APIKEY",
+      authDomain: "ISI_AUTH_DOMAIN",
+      databaseURL: "ISI_DATABASE_URL",
+      projectId: "ISI_PROJECT_ID",
+      storageBucket: "ISI_BUCKET",
+      messagingSenderId: "ISI_SENDER_ID",
+      appId: "ISI_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function kirimAbsensi() {
+        let nama = document.getElementById("nama").value;
+        let kelas = document.getElementById("kelas").value;
+        let status = document.getElementById("status").value;
+
+        if (!nama || !kelas) {
+            alert("❗ Nama dan kelas harus diisi!");
+            return;
+        }
+
+        let waktu = new Date().toLocaleString();
+
+        db.ref("absensi/" + Date.now()).set({
+            nama: nama,
+            kelas: kelas,
+            status: status,
+            waktu: waktu
+        });
+
+        document.getElementById("result").innerText = "✔ Absensi berhasil dikirim!";
+
+        // reset field
+        document.getElementById("nama").value = "";
+        document.getElementById("kelas").value = "";
+        document.getElementById("status").value = "Hadir";
+    }
+</script>
+
+</body>
+</html>
