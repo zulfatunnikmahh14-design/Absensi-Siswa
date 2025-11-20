@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Data Absensi</title>
+</head>
+<body>
+    <h2>Data Absensi Siswa</h2>
+    <table border="1" id="tabelAbsensi">
+        <tr>
+            <th>Nama</th>
+            <th>Kelas</th>
+            <th>Status</th>
+            <th>Waktu</th>
+        </tr>
+    </table>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+<script>
+    const firebaseConfig = {
+        // isi config firebase kamu
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    db.ref("absensi").on("value", snapshot => {
+        let data = snapshot.val();
+        let tabel = document.getElementById("tabelAbsensi");
+
+        // kosongkan tabel dulu
+        tabel.innerHTML = `
+            <tr>
+                <th>Nama</th>
+                <th>Kelas</th>
+                <th>Status</th>
+                <th>Waktu</th>
+            </tr>
+        `;
+
+        for (let id in data) {
+            let row = `
+                <tr>
+                    <td>${data[id].nama}</td>
+                    <td>${data[id].kelas}</td>
+                    <td>${data[id].status}</td>
+                    <td>${data[id].waktu}</td>
+                </tr>
+            `;
+            tabel.innerHTML += row;
+        }
+    });
+</script>
+</body>
+</html>
